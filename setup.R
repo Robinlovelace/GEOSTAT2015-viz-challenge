@@ -1,4 +1,7 @@
+library(sp)
 df <- read.csv("data/df.csv")
 head(df$date)
 library(lubridate)
-df$time <- dmy(df$date)
+df$time <- mdy(df$date)
+cds <- as.matrix(cbind(df$lonWGS84, df$latWGS84))
+d <- SpatialPointsDataFrame(cds, data = df)
