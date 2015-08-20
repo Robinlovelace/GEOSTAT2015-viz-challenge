@@ -11,7 +11,7 @@ shinyUI(fluidPage(
     sidebarPanel(
 
       selectInput("dtype", "Display", c("Points", "Raster cells", "Hexbins")),
-
+      selectInput("mtype", "Trend Model", c("Loess"="lo", "Linear"="li")),
     sliderInput("end_date", dragRange = TRUE,
       "End date:",
       min = strptime("2008-01-01 UTC", format = "%Y-%m-%d", tz = "UTC"),
@@ -25,6 +25,12 @@ shinyUI(fluidPage(
         min = 0,
         max = 2000,
         value = c(50, 500)),
+
+    sliderInput("span",
+                "Loess Smoothing",
+                min = 0,
+                max = 1,
+                value = 0.8),
 
       selectInput("ptype", "Precipitation type:", choices = c("liquid","solid")),
 
