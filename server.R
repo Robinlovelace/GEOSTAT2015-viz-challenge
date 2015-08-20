@@ -58,27 +58,15 @@ shinyServer(function(input, output) {
     if(input$dtype == "Points"){
 
       leaflet() %>%
-        addTiles(group = "OSM (default)") %>%
-        addProviderTiles("Esri.WorldTerrain", group = "Terrain") %>%
-        addProviderTiles("MapQuestOpen.Aerial", group = "Aerial photo") %>%
-        addCircles(data = d_uniq, color = ~qpal(Mean_precip), opacity = 0.6, radius = 8) %>%
-        addLegend(pal = qpal, values = d_uniq$Mean_precip, title = "mm/day") %>%
-        # Layers control
-        addLayersControl(
-          baseGroups = c("OSM (default)", "Aerial photo", "Terrain"),
-          options = layersControlOptions(collapsed = FALSE)
-        )
-
-    }else{
-
+        addProviderTiles("Esri.WorldTerrain") %>%
+        addCircles(data = d_uniq, color = ~qpal(Mean_precip), opacity = 0.6, radius = 8, group = "Points") %>%
+        addLegend(pal = qpal, values = d_uniq$Mean_precip, title = "mm/day")
+    } else{
       leaflet() %>%
-        addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}") %>%
-        addRasterImage(r, opacity = 0.5, colors = qpal2(r@data@values)) %>%
+        addProviderTiles("Esri.WorldTerrain") %>%
+        addRasterImage(r, opacity = 0.5, colors = qpal2(r@data@values), group = "Raster") %>%
         addLegend(pal = qpal2, values = values(r))
-
     }
-
-
 
     })
 
