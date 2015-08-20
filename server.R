@@ -23,6 +23,7 @@ shinyServer(function(input, output) {
     d[sel, ]
   })
 
+
   output$distPlot <- renderPlot({
     d <- dIn()
     d$dt <- round_date(d$time, unit = "month")
@@ -30,8 +31,14 @@ shinyServer(function(input, output) {
       summarise(Monthly_precip = mean(precip_mm)) ->
       dag
     lmod <- lm(Monthly_precip ~ dt, data = dag)
-    plot(dag)
-    abline(lmod)
+    ndt <- as.numeric(dag$dt - min(dag$dt))
+    cmod <- loess(Monthly_precip ~ ndt, data = dag,span=input$span)
+    nlp <- predict(cmod,newdata=seq(min(ndt),max(ndt),l=100))
+    par(bg='lightyellow')
+    plot(dag,ylab='Monthly Precipitation',xlab='Date')
+    if (input$mtype == 'li') abline(lmod,lty=2)
+    if (input$mtype == 'lo') lines(seq(min(dag$dt),max(dag$dt),l=100),nlp,lty=2)
+    #
   })
 
   output$map <- renderLeaflet({
