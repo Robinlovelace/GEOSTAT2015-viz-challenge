@@ -5,6 +5,7 @@ library(lubridate)
 library(dplyr)
 library(raster)
 library(gstat)
+library(RColorBrewer)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {

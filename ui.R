@@ -4,7 +4,7 @@ library(leaflet)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Hello Shiny!"),
+  titlePanel(HTML("GEOSTAT 2015 visualisation competition <a href='https://github.com/Robinlovelace/GEOSTAT2015-viz-challenge'>(see code)</a>")),
 
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
