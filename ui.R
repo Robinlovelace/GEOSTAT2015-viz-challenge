@@ -11,7 +11,7 @@ shinyUI(fluidPage(
     sidebarPanel(
 
       selectInput("dtype", "Display", c("Points", "Raster cells", "Hexbins")),
-      selectInput("mtype", "Trend Model", c("Loess"="lo", "Linear"="li")),
+      # selectInput("mtype", "Trend Model", c("Loess"="lo", "Linear"="li")),
     sliderInput("end_date", dragRange = TRUE,
       "End date:",
       min = strptime("2008-01-01 UTC", format = "%Y-%m-%d", tz = "UTC"),
@@ -27,20 +27,21 @@ shinyUI(fluidPage(
         value = c(50, 500)),
 
     sliderInput("span",
-                "Loess Smoothing",
-                min = 0,
-                max = 1,
-                value = 0.8),
+                "Rolling mean (months)",
+                step = 1,
+                min = 1,
+                max = 12,
+                value = 6),
 
       selectInput("ptype", "Precipitation type:", choices = c("liquid","solid")),
 
-      plotOutput("distPlot"),
       textOutput("text")
       ),
 
     # Show a plot of the generated distribution
     mainPanel(
-     leafletOutput(outputId = "map")
+     leafletOutput(outputId = "map"),
+      plotOutput("distPlot")
     )
   )
 ))
