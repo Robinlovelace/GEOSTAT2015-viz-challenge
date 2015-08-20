@@ -17,7 +17,8 @@ shinyServer(function(input, output) {
     sel <- d$time > input$end_date[[1]] & # times more than the start time and..
       d$time < input$end_date[[2]] & # times less than the end time
       d$precip_type == levels(df$precip_type)[ptype] &
-      !is.na(d$precip_type == levels(df$precip_type)[ptype])
+      !is.na(d$precip_type == levels(df$precip_type)[ptype]) &
+      d$altitude_m > input$alt[[1]] & d$altitude_m < input$alt[[2]]
     d[sel, ]
   })
 
@@ -51,21 +52,28 @@ shinyServer(function(input, output) {
     proj4string(r) <- CRS("+init=epsg:4326")
     colfun <- function(x) colorRamp(brewer.pal(6,'YlOrRd'), interpolate='spline')(x^0.333)
     qpal <- colorNumeric(palette = colfun, domain = d_uniq$Mean_precip, na.color = "grey")
+    qpal2 <- colorNumeric(palette = "YlOrRd", domain = values(r), na.color = "grey")
 
     if(input$dtype == "Points"){
 
       leaflet() %>%
-        addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}") %>%
-        addCircles(data = d_uniq, color = ~qpal(Mean_precip)) %>%
-        addLegend(pal = qpal, values = d_uniq$Mean_precip)
+        addTiles(group = "OSM (default)") %>%
+        addProviderTiles("Esri.WorldTerrain", group = "Terrain") %>%
+        addProviderTiles("MapQuestOpen.Aerial", group = "Aerial photo") %>%
+        addCircles(data = d_uniq, color = ~qpal(Mean_precip), opacity = 0.6, radius = 8) %>%
+        addLegend(pal = qpal, values = d_uniq$Mean_precip, title = "mm/day") %>%
+        # Layers control
+        addLayersControl(
+          baseGroups = c("OSM (default)", "Aerial photo", "Terrain"),
+          options = layersControlOptions(collapsed = FALSE)
+        )
 
     }else{
 
       leaflet() %>%
         addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}") %>%
-        addRasterImage(r, opacity = 0.4)
-#       %>%
-#         addLegend(pal = qpal, values = d_uniq$Mean_precip)
+        addRasterImage(r, opacity = 0.5, colors = qpal2(r@data@values)) %>%
+        addLegend(pal = qpal2, values = values(r))
 
     }
 

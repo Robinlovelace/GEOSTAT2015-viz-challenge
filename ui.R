@@ -19,11 +19,18 @@ shinyUI(fluidPage(
       value = c(strptime("2008-01-01 UTC", format = "%Y-%m-%d", tz = "UTC"),
         strptime("2010-12-31 UTC", format = "%Y-%m-%d", tz = "UTC")),
       timeFormat = "%F"),
+
+      sliderInput("alt", dragRange = TRUE,
+        "Altitude (m)",
+        min = 0,
+        max = 2000,
+        value = c(50, 500)),
+
       selectInput("ptype", "Precipitation type:", choices = c("liquid","solid")),
+
       plotOutput("distPlot"),
       textOutput("text")
-
-  ),
+      ),
 
     # Show a plot of the generated distribution
     mainPanel(
