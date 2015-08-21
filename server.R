@@ -48,8 +48,14 @@ shinyServer(function(input, output) {
       summarise(x = mean(Monthly_precip, na.rm = T))
     tag <- spread(tag, Altitude_bin, x)
 
-    tag[2:ncol(tag)] <- apply(tag[2:ncol(tag)], 2, RcppRoll::roll_mean, n = input$span, fill = NA)
-    tag <- gather(tag, Altitude_bin, Monthly_precip, -dt)
+    if(ncol(tag) > 2){
+      tag[2:ncol(tag)] <- apply(tag[2:ncol(tag)], 2, RcppRoll::roll_mean, n = input$span, fill = NA)
+      tag <- gather(tag, Altitude_bin, Monthly_precip, -dt)
+    } else{
+      names(tag)[2] <- "Monthly_precip"
+    }
+
+
 
     # tag$pz <- zoo(tag$dt, tag$`0 - 100m`)
     # tag$m.av <- rollmean(tag$pz, 6, fill = list(NA, NULL, NA))
