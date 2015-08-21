@@ -17,15 +17,13 @@ shinyServer(function(input, output) {
   source("R/krige-setup.R")
 
   dIn <- reactive({
-    ptype <- switch(input$ptype, liquid = 4, solid = 8)
     sel <- d$time > input$end_date[[1]] & # times more than the start time and..
       d$time < input$end_date[[2]] & # times less than the end time
-      d$precip_type == levels(df$precip_type)[ptype] &
-      !is.na(d$precip_type == levels(df$precip_type)[ptype]) &
+      grepl(input$ptype, d$precip_type) &
+      !is.na(d$precip_type) &
       d$altitude_m > input$alt[[1]] & d$altitude_m < input$alt[[2]]
     d[sel, ]
   })
-
 
   output$distPlot <- renderPlot({
     d <- dIn()
