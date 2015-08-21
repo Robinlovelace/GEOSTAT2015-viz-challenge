@@ -1,5 +1,5 @@
 bb <- bbox(d)
-cs <- c(1, 1) # cell size
+cs <- c(0.5, 0.5) # cell size
 cc <- bb[, 1] + (cs/2) #
 cd <- ceiling(diff(t(bb))/cs)
 lgrd <- GridTopology(cellcentre.offset = cc, cellsize = cs, cells.dim = cd)
